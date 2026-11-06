@@ -81,11 +81,53 @@ def busca_usuario():
     cur = con.cursor()
     usuario = input("insira o nome do usuario: ")
 
-    sql = "SELECT * FROM chamados WARE usuario = ?"
-    tabela = cur.execute(sql (usuario,))
+    sql = "SELECT * FROM chamados WHERE usuario LIKE ?"
+    tabela = cur.execute(sql, (usuario,))
 
+    n = 0
     for x in tabela:
         print(f"id: {x[0]} | titulo: {x[1]} | status: {x[2]} | prioridade: {x[3]} | usuario: {x[4]}")
+        n+=1
+    print(f"{n} chamado(s) com o usuario: {usuario} encontrado(s)")
+
+def busca_prioridade():
+    con = sqlite3.connect("chamados.db")
+    cur = con.cursor()
+    menu_prioridade = [
+    {"m":"Baixa","f":"Baixa"},
+    {"m":"Media","f":"Media"},
+    {"m":"Alta","f":"Alta"},
+    {"m":"Critica","f":"Critica"}]
+    
+    prioridade = menu(menu_prioridade,"Selecione a prioridade: ","none",-1,False)
+
+    sql = "SELECT * FROM chamados WHERE prioridade LIKE ?"
+    tabela = cur.execute(sql, (prioridade,))
+
+    n = 0
+    for x in tabela:
+        print(f"id: {x[0]} | titulo: {x[1]} | status: {x[2]} | prioridade: {x[3]} | usuario: {x[4]}")
+        n+=1
+    print(f"{n} chamados encontrados com a prioridade: {prioridade}")
+
+def busca_status():
+    con = sqlite3.connect("chamados.db")
+    cur = con.cursor()
+    menu_status = [
+    {"m":"Aberto","f":"Aberto"},
+    {"m":"Em progresso","f":"Em progresso"},
+    {"m":"Fechado","f":"Fechado"},]
+    
+    status = menu(menu_status,"Selecione o Status: ","none",-1,False)
+
+    sql = "SELECT * FROM chamados WHERE status LIKE ?"
+    tabela = cur.execute(sql, (status,))
+
+    n = 0
+    for x in tabela:
+        print(f"id: {x[0]} | titulo: {x[1]} | status: {x[2]} | prioridade: {x[3]} | usuario: {x[4]}")
+        n+=1
+    print(f"{n} chamados encontrados com o status: {status}")
 
 def abrir_chamado():
     con = sqlite3.connect('chamados.db')
@@ -100,7 +142,7 @@ def abrir_chamado():
     prioridade = menu(lista, "escolha a prioridade: ","não" ,"-1", False)
     status = "Aberto"
     usuario= input("insira o usuario que está fazendo o chamado: ")
-
+    print(prioridade)
     mostrar_chamado(titulo,prioridade,status,usuario)
     opt = sim_ou_não()
     if opt == 1:
@@ -108,7 +150,7 @@ def abrir_chamado():
         INSERT INTO chamados (titulo, status, prioridade, usuario)
         VALUES (?, ?, ?, ?)
         """
-        cur.execute(sql, (titulo, prioridade, status, usuario))
+        cur.execute(sql, (titulo, status, prioridade, usuario))
         con.commit()
         con.close
         return 0
@@ -118,10 +160,11 @@ def abrir_chamado():
         print("erro ao processar entrada")
 
 criar_tabela()
+busca_prioridade()
 
 menu_pricinal = [
     {"m":"procurar chamado por usuario","f":busca_usuario},
-    {"m":"procurar chamado por prioridade","f":fun_construcao},
+    {"m":"procurar chamado por prioridade","f":busca_prioridade},
     {"m":"pesquisa por status","f":fun_construcao},
     {"m":"chamados urgentes","f":fun_construcao},
     {"m":"abrir chamado","f":abrir_chamado},
@@ -130,3 +173,4 @@ menu_pricinal = [
     ]
 while True:
     menu(menu_pricinal,"escolha uma opção: ","sair do sitema",exit)
+    input("aperte ENTER para continuar")
