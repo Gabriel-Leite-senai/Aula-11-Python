@@ -66,6 +66,8 @@ def sim_ou_não(mensagen="deseja comfirmar a operação[S/N]? ", mensagen_erro="
         return 1
     elif opt.lower() in ["não", "nao", "n", "no"]:
         return 0
+    else:
+        print(mensagen_erro)
          
 def fun_construcao():
     print("essa função não esta pronta")
@@ -93,24 +95,24 @@ def abrir_chamado():
     prioridade = menu(lista, "escolha a prioridade: ","não" ,"-1", False)
     status = "Aberto"
     usuario= input("insira o usuario que está fazendo o chamado: ")
-    
+
     mostrar_chamado(titulo,prioridade,status,usuario)
     opt = sim_ou_não()
     if opt == 1:
-        sql = ["""
-        INSERT INTO chamados (titulo, prioridade, status, usuario)
-        VALUES (?, ?, ?, ?) """]
-        cur.execute(sql (titulo, prioridade, status, usuario))
+        sql = """
+        INSERT INTO chamados (titulo, status, prioridade, usuario)
+        VALUES (?, ?, ?, ?)
+        """
+        cur.execute(sql, (titulo, prioridade, status, usuario))
         con.commit()
-        cur.close
-        return 0
-    elif opt == 0:
-        return 1
-    else:
         return opt
+    elif opt == 0:
+        return opt
+    else:
+        print("erro ao processar entrada")
 
 criar_tabela()
-    
+
 menu_pricinal = [
     {"m":"procurar chamado por usuario","f":fun_construcao},
     {"m":"procurar chamado por prioridade","f":fun_construcao},
