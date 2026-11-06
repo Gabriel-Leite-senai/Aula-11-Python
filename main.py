@@ -1,6 +1,21 @@
 import sqlite3
 
-def input_int(self, mensagen, mensagen_erro="entrada precisa ser um numero inteiro"):
+def criar_tabela():
+    con = sqlite3.connect("chamados.db")
+    cur = con.cursor()
+
+    sql = """
+    CREATE TABLE IF NOT EXISTS chamados
+    (id INTEGER PRIMARY KEY AUTOINCREMENT,
+    titulo TEXT NOT NULL,
+    status TEXT NOT NULL,
+    prioridade TEXT NOT NULL,
+    usuario TEXT NOT NULL)"""
+
+    cur.execute(sql)
+    con.commit()
+
+def input_int(mensagen, mensagen_erro="entrada precisa ser um numero inteiro"):
     while True:
         num = input(mensagen)
         try:
@@ -8,7 +23,7 @@ def input_int(self, mensagen, mensagen_erro="entrada precisa ser um numero intei
         except ValueError:
             print(mensagen_erro)
 
-def input_float(self, mensagen, mensagen_erro="entrada precisa ser um numero"):
+def input_float(mensagen, mensagen_erro="entrada precisa ser um numero"):
     while True:
         num = input(mensagen)
         try:
@@ -17,7 +32,7 @@ def input_float(self, mensagen, mensagen_erro="entrada precisa ser um numero"):
             print(mensagen_erro)
 
 #estou orgulhoso dessa função
-def menu(self, lista,mensagen,zero_m,zero_f,mostrar_zero=True):
+def menu(lista,mensagen,zero_m,zero_f,mostrar_zero=True):
     while True:
         for opcao in lista:
             x = lista.index(opcao)+1
@@ -45,7 +60,7 @@ def menu(self, lista,mensagen,zero_m,zero_f,mostrar_zero=True):
         else:
             print("opção invalida")
 
-def sim_ou_não(self, mensagen="deseja comfirmar a operação[S/N]? ", mensagen_erro="opção invalida"):
+def sim_ou_não(mensagen="deseja comfirmar a operação[S/N]? ", mensagen_erro="opção invalida"):
     opt = input(mensagen)
     if opt.lower() in ["sim","s","si"]:
         return 1
@@ -58,6 +73,13 @@ def fun_construcao():
 def mostrar_chamado(titulo,prioridade,status,usuario):
     print(f"titulo: {titulo} | prioridade: {prioridade} | status: {status} | usuario: {usuario}")
 
+def busca_usuario():
+    usuario = input("insira o nome do usuario: ")
+
+    sql = """
+    SELECT usuario FROM chamados
+    """
+
 def abrir_chamado():
     con = sqlite3.connect('chamados.db')
     cur = con.cursor()
@@ -69,9 +91,9 @@ def abrir_chamado():
      {"m":"Alta","f":"Alta"},
      {"m":"Critica","f":"Critica"}]
     prioridade = menu(lista, "escolha a prioridade: ","não" ,"-1", False)
-    print(prioridade)
     status = "Aberto"
     usuario= input("insira o usuario que está fazendo o chamado: ")
+    
     mostrar_chamado(titulo,prioridade,status,usuario)
     opt = sim_ou_não()
     if opt == 1:
@@ -87,6 +109,7 @@ def abrir_chamado():
     else:
         return opt
 
+criar_tabela()
     
 menu_pricinal = [
     {"m":"procurar chamado por usuario","f":fun_construcao},
@@ -98,4 +121,4 @@ menu_pricinal = [
     {"m":"fechar chamdo","f":fun_construcao}
     ]
 while True:
-    menu(menu_pricinal,"escolha uma opção: ","sair do sitema",exit)
+    print(menu(menu_pricinal,"escolha uma opção: ","sair do sitema",exit))
