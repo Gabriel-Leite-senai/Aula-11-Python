@@ -122,7 +122,7 @@ def busca_status():
 
     sql = "SELECT * FROM chamados WHERE status LIKE ?"
     tabela = cur.execute(sql, (status,))
-
+    con.close()
     n = 0
     for x in tabela:
         print(f"id: {x[0]} | titulo: {x[1]} | status: {x[2]} | prioridade: {x[3]} | usuario: {x[4]}")
@@ -159,13 +159,31 @@ def abrir_chamado():
     else:
         print("erro ao processar entrada")
 
+def resolver_chamado():
+    con = sqlite3.connect("chamados.db")
+    cur = con.cursor()
+    chamado = input("insira o id ou o nome do chamado: ")
+    try:
+        chamdo = int(chamdo)
+        sql_update = "UPDATE chamados SET status=? WHERE id = ?"
+        sql_quarry = "SELECT * FROM chamados WHARE id = ?"
+    except ValueError:
+        sql_update = "UPDATE chamados SET status=? WHARE nome LIKE ?"
+        sql_quarry = "SELECT * FROM chamados WHERE nome LIKE ?"
+    
+    lista = cur.execute(sql_quarry, (chamado,))
+
+    opt = sim_ou_não()
+    
+    
+    
+
 criar_tabela()
-busca_prioridade()
 
 menu_pricinal = [
     {"m":"procurar chamado por usuario","f":busca_usuario},
     {"m":"procurar chamado por prioridade","f":busca_prioridade},
-    {"m":"pesquisa por status","f":fun_construcao},
+    {"m":"pesquisa por status","f":busca_status},
     {"m":"chamados urgentes","f":fun_construcao},
     {"m":"abrir chamado","f":abrir_chamado},
     {"m":"resolver chamado","f":fun_construcao},
