@@ -14,6 +14,7 @@ def criar_tabela():
 
     cur.execute(sql)
     con.commit()
+    con.close()
 
 def input_int(mensagen, mensagen_erro="entrada precisa ser um numero inteiro"):
     while True:
@@ -76,11 +77,15 @@ def mostrar_chamado(titulo,prioridade,status,usuario):
     print(f"titulo: {titulo} | prioridade: {prioridade} | status: {status} | usuario: {usuario}")
 
 def busca_usuario():
+    con = sqlite3.connect("chamados.db")
+    cur = con.cursor()
     usuario = input("insira o nome do usuario: ")
 
-    sql = """
-    SELECT usuario FROM chamados
-    """
+    sql = "SELECT * FROM chamados WARE usuario = ?"
+    tabela = cur.execute(sql (usuario,))
+
+    for x in tabela:
+        print(f"id: {x[0]} | titulo: {x[1]} | status: {x[2]} | prioridade: {x[3]} | usuario: {x[4]}")
 
 def abrir_chamado():
     con = sqlite3.connect('chamados.db')
@@ -105,16 +110,17 @@ def abrir_chamado():
         """
         cur.execute(sql, (titulo, prioridade, status, usuario))
         con.commit()
-        return opt
+        con.close
+        return 0
     elif opt == 0:
-        return opt
+        return 1
     else:
         print("erro ao processar entrada")
 
 criar_tabela()
 
 menu_pricinal = [
-    {"m":"procurar chamado por usuario","f":fun_construcao},
+    {"m":"procurar chamado por usuario","f":busca_usuario},
     {"m":"procurar chamado por prioridade","f":fun_construcao},
     {"m":"pesquisa por status","f":fun_construcao},
     {"m":"chamados urgentes","f":fun_construcao},
@@ -123,4 +129,4 @@ menu_pricinal = [
     {"m":"fechar chamdo","f":fun_construcao}
     ]
 while True:
-    print(menu(menu_pricinal,"escolha uma opção: ","sair do sitema",exit))
+    menu(menu_pricinal,"escolha uma opção: ","sair do sitema",exit)
